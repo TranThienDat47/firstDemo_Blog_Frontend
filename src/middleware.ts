@@ -5,7 +5,7 @@ import { fallbackLng, languages, cookieName } from './app/i18n/settings';
 acceptLanguage.languages(languages);
 
 export const config = {
-   matcher: ['/((?!api|_next/static|_next/image|assets|sw.js|site.webmanifest).*)'],
+   matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)'],
 };
 
 export function middleware(req: NextRequest) {
@@ -13,6 +13,20 @@ export function middleware(req: NextRequest) {
    if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName)?.value ?? '');
    if (!lng) lng = acceptLanguage.get(req.headers.get('Accept-Language'));
    if (!lng) lng = fallbackLng;
+
+   const currentPath = req.nextUrl.pathname;
+   const currentLngInPath = languages.find((loc) => currentPath.startsWith(`/${loc}`));
+
+   if (lng && currentLngInPath && lng !== currentLngInPath) {
+      let newUrl;
+      if (currentPath === `/${currentLngInPath}`) {
+         newUrl = new URL(`/${lng}`, req.url);
+      } else {
+         const newPath = `/${lng}${currentPath.slice(currentLngInPath.length + 1)}`;
+         newUrl = new URL(newPath, req.url);
+      }
+      return NextResponse.redirect(newUrl);
+   }
 
    // Redirect if lng in path is not supported
    if (
@@ -24,7 +38,8 @@ export function middleware(req: NextRequest) {
 
    if (req.headers.has('referer')) {
       const refererUrl = new URL(req.headers.get('referer') ?? '');
-      const lngInReferer = languages.find((lng) => refererUrl.pathname.startsWith(`/${lng}`));
+
+      const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`/${l}`));
       const response = NextResponse.next();
       if (lngInReferer) response.cookies.set(cookieName, lngInReferer);
       return response;

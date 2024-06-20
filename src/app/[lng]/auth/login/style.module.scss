@@ -1,7 +1,35 @@
-.test {
-   @apply bg-blue-500 text-white;
+.spreator-with-text {
+   position: relative;
+   text-align: center;
+
+   &::before,
+   &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      border-bottom: 2px solid var(--border-color);
+      width: 40%;
+   }
+
+   &::before {
+      left: 0;
+   }
+
+   &::after {
+      right: 0;
+   }
 }
 
-.ok {
-   color: red;
+.option-login-item {
+   &:not(:first-child) {
+      @apply mt-3;
+   }
+
+   .icon {
+      font-size: 1.3rem;
+   }
+
+   .icon-facbook {
+      color: var(--facebook-color);
+   }
 }

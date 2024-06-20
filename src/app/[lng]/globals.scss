@@ -4,9 +4,18 @@
 @tailwind utilities;
 
 :root {
+   --text-color: #272e34;
+   --text-bland: rgba(23, 26, 39, 0.63);
+
    --foreground-rgb: 0, 0, 0;
    --background-start-rgb: 214, 219, 220;
    --background-end-rgb: 255, 255, 255;
+
+   --border-color: rgba(22, 24, 35, 0.13);
+   --box-shadow-color: rgba(23, 26, 39, 0.26);
+   --hover-item-color: rgba(23, 26, 39, 0.06);
+
+   --facebook-color: #0866ff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,7 +27,7 @@
 }
 
 body {
-   color: rgb(var(--foreground-rgb));
+   color: var(--text-color);
    background: var(--foreground-rgb);
 }
 
