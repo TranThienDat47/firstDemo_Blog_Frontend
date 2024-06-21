@@ -1,22 +1,28 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.scss';
-
-const inter = Inter({ subsets: ['latin'] });
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
 
 export const metadata: Metadata = {
    title: 'ManledBlog',
    description: 'ManledBlog',
 };
 
-export default function RootLayout({
-   children,
-}: Readonly<{
-   children: React.ReactNode;
-}>) {
+interface IProps {
+   params: {
+      lng: string;
+   };
+   children: any;
+}
+
+export default function RootLayout({ params: { lng }, children }: Readonly<IProps>) {
    return (
-      <html lang="en" suppressHydrationWarning={true}>
-         <body>{children}</body>
+      <html suppressHydrationWarning={true}>
+         <body>
+            <Header lng={lng} />
+            {children}
+            <Footer />
+         </body>
       </html>
    );
 }

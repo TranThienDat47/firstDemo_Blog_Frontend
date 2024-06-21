@@ -19,6 +19,8 @@
       ],
       "paths": {
          "~/*": ["./src/*"],
+         "~libs/*": ["./src/libs/*"],
+         "~i18n/*": ["./src/libs/i18n/*"],
          "~public/*": ["./public/*"]
       }
    },

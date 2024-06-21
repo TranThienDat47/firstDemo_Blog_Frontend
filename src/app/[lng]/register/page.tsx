@@ -2,11 +2,11 @@ import classNames from 'classnames/bind';
 import style from './style.module.scss';
 import logo from '~public/logo.svg';
 import Image from 'next/image';
-import { fallbackLng, languages } from '~/app/i18n/settings';
-import { useTranslation } from '~/app/i18n';
+import { fallbackLng, languages } from '~i18n/settings';
+import { useTranslation } from '~i18n/index';
 import Link from 'next/link';
-import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
+import GoogleSignInButton from '~/components/GoogleSignInButton';
 
 const cx = classNames.bind(style);
 
@@ -30,27 +30,51 @@ export default async function Register({ params: { lng } }: IProps) {
                </div>
                <form className={cx('form-register', 'mt-3')}>
                   <div>
+                     <div className={cx('flex')}>
+                        <input className="input input-bordered w-48 h-11" type="text" placeholder={t('firstname')} />
+                        <input
+                           className="input input-bordered w-full h-11 ml-3 "
+                           type="text"
+                           placeholder={t('lastname')}
+                        />
+                     </div>
                      <input
-                        className="input input-bordered w-full h-11 max-w-xs"
-                        type="email"
+                        className="input input-bordered w-full h-11 max-w-xs mt-3"
+                        type="password"
                         placeholder={t('Email')}
                      />
+
+                     <input
+                        className="input input-bordered w-full h-11 max-w-xs mt-3"
+                        type="password"
+                        placeholder={t('your pass')}
+                     />
+
+                     <input
+                        className="input input-bordered w-full h-11 max-w-xs mt-3"
+                        type="password"
+                        placeholder={t('confirm pass')}
+                     />
+
+                     <div className={cx('mt-3 ml-1')}>
+                        <input id="showpass" type="checkbox" />
+                        <label className={cx('select-none ml-3')} htmlFor="showpass">
+                           {t('show pass')}
+                        </label>
+                     </div>
                   </div>
                   <div className={cx('flex justify-between mt-6')}>
-                     <Link href={'/auth/login'} className={cx('btn btn-ghost btn-sm')}>
+                     <Link href={'/login'} className={cx('btn btn-ghost btn-sm')}>
                         {t('had account')}
                      </Link>
                      <button type="button" className={cx('btn btn-primary btn-sm')}>
-                        {t('next')}
+                        {t('register')}
                      </button>
                   </div>
                </form>
                <div className={cx('spreator-with-text', 'mt-6')}>{t('or')}</div>
                <div className={cx('option-login-list flex flex-col mt-3')}>
-                  <Link href={'#'} className={cx('option-login-item', 'btn')}>
-                     <FcGoogle className={cx('icon')} />
-                     <span>{t('google sigin')}</span>
-                  </Link>
+                  <GoogleSignInButton lng={lng}></GoogleSignInButton>
                   <Link href={'#'} className={cx('option-login-item', 'btn')}>
                      <FaFacebook className={cx('icon', 'icon-facbook')} />
                      <span>{t('facebook sigin')}</span>

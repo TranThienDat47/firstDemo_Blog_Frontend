@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import acceptLanguage from 'accept-language';
-import { fallbackLng, languages, cookieName } from './app/i18n/settings';
+import { fallbackLng, languages, cookieName } from '~i18n/settings';
 
 acceptLanguage.languages(languages);
 
@@ -9,10 +9,21 @@ export const config = {
 };
 
 export function middleware(req: NextRequest) {
+   const token = req.cookies.get('token');
+
    let lng;
    if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName)?.value ?? '');
    if (!lng) lng = acceptLanguage.get(req.headers.get('Accept-Language'));
    if (!lng) lng = fallbackLng;
+
+   const authRoutes = [lng + '/login', lng + '/register'];
+   const isAuthRoute = authRoutes.some((route) => {
+      return req.nextUrl.pathname.includes(route);
+   });
+
+   if (token && isAuthRoute) {
+      return NextResponse.redirect(new URL('/', req.url));
+   }
 
    const currentPath = req.nextUrl.pathname;
    const currentLngInPath = languages.find((loc) => currentPath.startsWith(`/${loc}`));
