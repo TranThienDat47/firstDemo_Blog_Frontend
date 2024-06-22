@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { userStore } from '~/stores/userStore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import firebaseApp from '~/libs/firebase';
+
 import { fallbackLng, languages } from '~/libs/i18n/settings';
 import { useTranslation } from '~/libs/i18n';
+import Link from 'next/link';
+import { useCombinedStore } from '~/stores';
 
 interface IProps {
    lng: string;
@@ -24,34 +24,21 @@ const Header: React.FC | any = ({ lng }: IProps) => {
    const [translation, setTranslation] = useState({ t: (key: string) => key });
 
    useEffect(() => {
-      const fetchTranslation = async () => {
-         const { t } = await useTranslation(lng, 'header');
-         setTranslation({ t });
-      };
+      if (!translation) {
+         const fetchTranslation = async () => {
+            const { t } = await useTranslation(lng, 'header');
+            setTranslation({ t });
+         };
+
+         fetchTranslation();
+      }
 
       if (languages.indexOf(lng) < 0) {
          lng = fallbackLng;
       }
-
-      fetchTranslation();
    }, [lng]);
 
-   const { user, setUser } = userStore();
-
-   useEffect(() => {
-      if (!user) {
-         const auth = getAuth(firebaseApp);
-         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-               setUser(user);
-            } else {
-               setUser(null);
-            }
-         });
-
-         return () => unsubscribe();
-      }
-   }, []);
+   const { userStore } = useCombinedStore();
 
    return (
       <header>
@@ -74,7 +61,9 @@ const Header: React.FC | any = ({ lng }: IProps) => {
                </button>
             </div>
             <div className="">
-               <a className="btn btn-ghost text-xl">daisyUI</a>
+               <Link href="/" className="btn btn-ghost text-xl">
+                  daisyUI
+               </Link>
             </div>
             <div className="flex flex-1 flex items-center justify-center">
                <form className="form-control ml-2 w-full max-w-md h-9">
@@ -120,7 +109,7 @@ const Header: React.FC | any = ({ lng }: IProps) => {
             </div>
             <div className="flex-none gap-2">
                <div className="dropdown dropdown-end">
-                  {!!user ? (
+                  {!!userStore.getState().user ? (
                      <>
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                            <div className="w-10 rounded-full">

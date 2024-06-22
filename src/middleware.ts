@@ -16,6 +16,10 @@ export function middleware(req: NextRequest) {
    if (!lng) lng = acceptLanguage.get(req.headers.get('Accept-Language'));
    if (!lng) lng = fallbackLng;
 
+   if (req.nextUrl.pathname === `/${lng}/dashboard`) {
+      return NextResponse.redirect(new URL(`/${lng}/dashboard/views`, req.url));
+   }
+
    const authRoutes = [lng + '/login', lng + '/register'];
    const isAuthRoute = authRoutes.some((route) => {
       return req.nextUrl.pathname.includes(route);

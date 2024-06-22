@@ -8,9 +8,9 @@ import style from './style.module.scss';
 import { fallbackLng, languages } from '~i18n/settings';
 import { useTranslation } from '~i18n/index';
 import { useEffect, useState } from 'react';
-import { userStore } from '~/stores/userStore';
 import { useRouter } from 'next/navigation';
 import { setCookie } from '~/libs/cookies';
+import { useCombinedStore } from '~/stores';
 
 const cx = classNames.bind(style);
 
@@ -20,6 +20,7 @@ interface IProps {
 
 const GoogleSignInButton = ({ lng }: IProps) => {
    const [translation, setTranslation] = useState({ t: (key: string) => key });
+   const { userStore } = useCombinedStore();
 
    useEffect(() => {
       const fetchTranslation = async () => {
@@ -34,13 +35,12 @@ const GoogleSignInButton = ({ lng }: IProps) => {
       fetchTranslation();
    }, [lng]);
 
-   const { setUser } = userStore();
    const router = useRouter();
 
    const handleGoogleSignIn = () => {
       signInWithPopup(auth, googleAuthProvider)
          .then(async (result) => {
-            setUser(result.user);
+            userStore.getState().setUser(result.user);
 
             return await result.user.getIdToken();
          })

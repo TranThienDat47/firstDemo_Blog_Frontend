@@ -9,7 +9,7 @@ function Footer() {
    if (isAuthRoute) {
       return null;
    }
-   return <footer>Footer</footer>;
+   return <footer></footer>;
 }
 
 export default Footer;
